@@ -64,12 +64,13 @@ class Video():
         if self.title is None or title_len < 0:
             status = False
             print('FIX: No title found')
-        elif ' ' not in self.title:
-            status = False
-            print('FIX: No spaces found in title: {}'.format(self.title))
-        elif title_len < 10:
-            status = False
-            print('FIX: Very short title: {}'.format(self.title))
+        #TODO: LALI_LOG made changes to the code here
+        # elif ' ' not in self.title:
+        #     status = False
+        #     print('FIX: No spaces found in title: {}'.format(self.title))
+        # elif title_len < 10:
+        #     status = False
+        #     print('FIX: Very short title: {}'.format(self.title))
         elif title_len > 100:
             status = False
             print('FIX: Title over 100 characters for {}'.format(self.title))
@@ -79,19 +80,22 @@ class Video():
     # check that hashtags are in an acceptable format
     def check_hashtags(self):
         # strip # and whitespace
-        hts = [t.strip('#').strip() for t in self.hashtags]
+        #TODO: LALI_LOG made changes to the code here
+        if self.hashtags != None:
+            hts = [t.strip('#').strip() for t in self.hashtags]
 
-        # remove non-alphanumeric
-        hts = [t for t in self.hashtags if t.isalnum()]
-        diff = set(self.hashtags) - set(hts)
-        if len(diff) > 0:
-            removed = ', '.join(diff)
-            print('WARN: These hashtags were removed: {}'.format(removed))
+            # remove non-alphanumeric
+            hts = [t for t in self.hashtags if t.isalnum()]
+            diff = set(self.hashtags) - set(hts)
+            if len(diff) > 0:
+                removed = ', '.join(diff)
+                print('WARN: These hashtags were removed: {}'.format(removed))
 
-        # remove duplicates
-        self.hashtags = list(set(hts))
+            # remove duplicates
+            self.hashtags = list(set(hts))
 
-        return True
+            return True
+        return False 
 
     # check tags against YouTube limits
     def check_tags(self):

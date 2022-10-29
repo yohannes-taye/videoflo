@@ -1,3 +1,4 @@
+from cmath import log
 import os
 from pathlib import Path
 from flo.idea import Idea
@@ -7,22 +8,44 @@ from flo.channel import Channel
 from flo.videoflo import VideoFlo
 from flo.mactag import update_tag
 from datetime import datetime
+import debugpy
 
 
+#TODO: LALI_LOG made changes to the code here
 # get the thumbnail file
-def get_thumbnail(path):
+# def get_thumbnail(path):
+#     img_files = []
+#     for ext in ['png', 'jpg', 'jpeg']:
+#         img_files.extend(path.glob('[!.]*.' + ext))
+#     num_img = len(img_files)
+#     if num_img != 1:
+#         print('FIX: Found {} thumbnail image files'.format(num_img, path))
+#         return None
+#     return str(img_files[0])
+def get_thumbnail(path, name):
     img_files = []
     for ext in ['png', 'jpg', 'jpeg']:
-        img_files.extend(path.glob('[!.]*.' + ext))
+        img_files.extend(path.glob(f'{name}.' + ext))
     num_img = len(img_files)
     if num_img != 1:
         print('FIX: Found {} thumbnail image files'.format(num_img, path))
         return None
     return str(img_files[0])
 
+
+#TODO: LALI_LOG made changes to the code here
 # get the video file
-def get_video_file(path):
-    mov_files = list(path.glob('[!.]*.mov'))
+# def get_video_file(path):
+#     mov_files = list(path.glob('[!.]*.mov'))
+#     num_mov = len(mov_files)
+#     if num_mov != 1:
+#         print('FIX: Found {} mov files'.format(num_mov, path))
+#         return None
+#     video_file = Path(mov_files[0]).name
+#     return video_file
+# get the video file
+def get_video_file(path, name):
+    mov_files = list(path.glob(f'{name}.mp4'))
     num_mov = len(mov_files)
     if num_mov != 1:
         print('FIX: Found {} mov files'.format(num_mov, path))
@@ -47,9 +70,11 @@ def get_upload_dict(channel, trello, limit):
             'tags': trello.get_checklist(item['idChecklists'], 'tags'),
             'hashtags': trello.get_checklist(item['idChecklists'], 'hashtags'),
         }
-
+             
         card_id = item['id']
-        path = channel.find_path_for_id(card_id)
+        #TODO: LALI_LOG made changes to the code here
+        # path = channel.find_path_for_id(card_id)
+        path = channel.find_path_for_name(item['name'])
         if path is None:
             print('Could not find local path for {}'.format(name))
             continue
@@ -67,11 +92,11 @@ def get_upload_dict(channel, trello, limit):
         count = count + 1
 
         # video thumbnail
-        thumbnail = get_thumbnail(path)
+        thumbnail = get_thumbnail(path, item['name'])
         warn = warn + 1 if thumbnail is None else warn
 
         # video file
-        video_file = get_video_file(path)
+        video_file = get_video_file(path, item['name'])
         if video_file is None:
             warn = warn + 1
             continue
@@ -80,8 +105,8 @@ def get_upload_dict(channel, trello, limit):
         warn = warn + 1 if not video.check_title() else warn
         warn = warn + 1 if not video.check_description() else warn
         warn = warn + 1 if not video.check_date() else warn
-        warn = warn + 1 if not video.check_tags() else warn
-        warn = warn + 1 if not video.check_hashtags() else warn
+        warn = warn if not video.check_tags() else warn
+        warn = warn if not video.check_hashtags() else warn
         warn = warn + 1 if not video.check_thumbnail() else warn
         video.format_description()
 
@@ -117,9 +142,10 @@ def do_uploads(upload_dict):
         if video_id is not None:
             upload_count += 1
             update_tag('Scheduled', video.path)
-            trello = Trello()
-            trello.move_card(video.idea, 'Scheduled')
-            trello.attach_links_to_card(card_id, video_id)
+            #TODO: LALI_LOG fix this
+            # trello = Trello()
+            # trello.move_card(video.idea, 'Scheduled')
+            # trello.attach_links_to_card(card_id, video_id)
     duration = datetime.now() - start_time
     print('Uploaded {}/{} videos in {}'.format(upload_count, upload_total, duration))
 
@@ -141,4 +167,7 @@ def go():
     if not dry_run and len(upload_dict) > 0:
         do_uploads(upload_dict)
 
+debugpy.listen(5678)
+print("Press play!")
+# debugpy.wait_for_client()
 go()

@@ -384,7 +384,9 @@ class Trello():
         for item in response.json():
             card_id = item['id']
             name = item['name']
-            path = channel.find_path_for_id(card_id)
+            #TODO:LALI_DEBUG I have made modifications here 
+            path = channel.find_path_for_name(name)
+            # path = channel.find_path_for_id(card_id)
             if path is None:
                 print('Could not find local path for {}'.format(name))
                 return [] # something's wrong. get return to caller

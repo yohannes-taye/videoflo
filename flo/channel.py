@@ -2,7 +2,7 @@
 
 import os
 from pathlib import Path
-from flo.const import SETTINGSFILE, CARDFILE, STAGEFILE, STAGES
+from flo.const import MP4FLIE, SETTINGSFILE, CARDFILE, STAGEFILE, STAGES
 
 
 class Channel:
@@ -107,6 +107,17 @@ class Channel:
                 return path
 
         return None
+    
+    def find_path_for_name(self, card_title):
+        channel_path = Path(self.path)
+        for video_file in list(channel_path.rglob(MP4FLIE)):
+            #check if string contains substring
+            if card_title in video_file.name:
+                path = os.path.dirname(video_file)
+                return path
+
+        return None
+   
 
     def get_list(self, stage_name):
         items = []

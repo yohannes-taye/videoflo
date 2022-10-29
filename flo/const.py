@@ -1,5 +1,6 @@
 # Constants
 
+MP4FLIE = '*.mp4'
 CARDFILE = '.card'
 STAGEFILE = '.stage'
 STATSFILE = '.stats'

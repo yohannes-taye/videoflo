@@ -313,6 +313,7 @@ class Trello():
             print('NOTE: set due date for 1 week from today')
 
         due_date = due_date.isoformat() + 'Z'
+        #LALI_DEBUG: the trello card is being created here.
         card = self._create_card(list_id, idea, due_date)
         if card is None:
             return None, None

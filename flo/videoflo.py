@@ -22,8 +22,24 @@ class VideoFlo():
         self.root= config['main']['root_dir']
         self.channels = [Channel(self.config, c) for c in self._get_channels()]
 
+
+
     def _get_channels(self):
         return set(self.config.sections()) - set(['main', 'trello'])
+
+
+    def _add_debug_args(self, parser):
+        parser.add_argument('--debug',
+                            action='store_true',
+                            required=False,
+                            help='Debug mode',
+                            default=False)
+
+        parser.add_argument('-r', '--revert_changes', 
+                            action='store_true', 
+                            required=False,
+                            help='Revert changes to the folder',
+                            default=False)
 
     def _add_channel_arg(self, parser):
         parser.add_argument('-c', '--channel',
@@ -64,6 +80,7 @@ class VideoFlo():
                             help='Destination directory')
         self._add_channel_arg(parser)
         self._add_offline_arg(parser)
+        self._add_debug_args(parser) 
         args = parser.parse_args()
         return args
 

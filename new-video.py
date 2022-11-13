@@ -4,7 +4,7 @@ from flo.idea import Idea
 from flo.videoflo import VideoFlo
 from flo.trello import Trello
 from flo.mactag import add_tag
-
+import debugpy
 
 def go():
     flo = VideoFlo()
@@ -36,5 +36,9 @@ def go():
         trello.save_card(card_id, idea)
 
     add_tag('Script', idea.path, do_open=True)
+
+debugpy.listen(5678)
+print("Press play!")
+debugpy.wait_for_client()
 
 go()

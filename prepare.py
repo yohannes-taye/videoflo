@@ -55,7 +55,7 @@ def get_new_file_name(video, multiple=False, part=1):
     if multiple:
         new_file_name = f"#{num} {year}—{month}—{day} Part{part}.mp4"
     else: 
-        new_file_name = f"#{num} {date}.mp4"
+        new_file_name = f"#{num} {year}—{month}—{day}.mp4"
     return new_file_name
 
 
